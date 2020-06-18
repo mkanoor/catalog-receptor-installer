@@ -8,6 +8,7 @@
       mode: 0755
     loop: "{{ account_dirs }}"
   - name: Start the Shell Script for receptor
-    shell: "{{ receptor_config_dir }}/{{ item }}/receptor_nohup.sh"
+    command:
+      cmd: "{{ receptor_config_dir }}/{{ item }}/receptor_nohup.sh"
     loop: "{{ account_dirs }}"
   tags: install_local_scripts
