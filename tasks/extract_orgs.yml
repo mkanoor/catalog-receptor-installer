@@ -16,15 +16,21 @@
       path: "{{ receptor_data_dir }}/rh_ansible_{{ tower_account_id }}"
       state: directory
       mode: 0755
-  - name: Generate a UUID for this Receptor node
-    shell: "uuidgen > {{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}/uuid"
-    args:
-      creates: "{{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}/uuid"
+  - name: Generate a new UUID
+    command:
+      cmd: uuidgen
+    register: uuid_output
+  - name: Save UUID for this Receptor node
+    copy:
+      dest: "{{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}/uuid"
+      content: |
+        {{ uuid_output.stdout }}
     when: existing_receptor_node_id is not defined
   - name: Generate a UUID file from existing receptor_node_id
     copy:
-      content: "{{ existing_receptor_node_id }}"
       dest: "{{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}/uuid"
+      content: |
+        {{ existing_receptor_node_id }}
     when: existing_receptor_node_id is defined
 
   - name: "Write Receptor configuration for account {{ tower_account_id }}"
