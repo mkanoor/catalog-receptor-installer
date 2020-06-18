@@ -45,7 +45,7 @@
 - name: Install Receptor and Ansible Tower Plugin RPMs
   block:
   - name: Check if the packages are available
-    shell:
+    command:
       cmd: "dnf info {{ item }}"
       warn: false
     loop: "{{ receptor_packages }}"
