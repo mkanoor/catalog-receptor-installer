@@ -1,0 +1,35 @@
+---
+- name: Extract Organization ID
+  set_fact:
+    tower_account_id: "{{ org_id|string }}"
+- name: If an account number is findable
+  block:
+  - debug:
+      msg: "Account {{ tower_account_id }} associated with organization {{ org_id }}"
+  - name: "Make configuration directory for account {{ tower_account_id }}"
+    file:
+      path: "{{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}"
+      state: directory
+      mode: 0755
+  - name: "Make a data directory for account {{ tower_account_id }}"
+    file:
+      path: "{{ receptor_data_dir }}/rh_ansible_{{ tower_account_id }}"
+      state: directory
+      mode: 0755
+  - name: Generate a UUID for this Receptor node
+    shell: "uuidgen > {{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}/uuid"
+    args:
+      creates: "{{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}/uuid"
+    when: existing_receptor_node_id is not defined
+  - name: Generate a UUID file from existing receptor_node_id
+    copy:
+      content: "{{ existing_receptor_node_id }}"
+      dest: "{{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}/uuid"
+    when: existing_receptor_node_id is defined
+
+  - name: "Write Receptor configuration for account {{ tower_account_id }}"
+    template:
+      dest: "{{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}/receptor.conf"
+      mode: 0400
+      src: receptor.conf.j2
+  when: tower_account_id | length > 0

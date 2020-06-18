@@ -1,0 +1,18 @@
+---
+- name: Create Receptor systemd unit files per account and start them
+  block:
+  - name: Generate template unit file
+    template:
+      src: receptor@.service.j2
+      dest: /etc/systemd/system/catalog_receptor@.service
+  - name: Reload systemd units
+    systemd:
+      daemon_reload: yes
+  - name: Enable Receptor systemd units
+    systemd:
+      unit: "catalog_receptor@{{ item }}.service"
+      enabled: yes
+      state: started
+    loop: "{{ account_dirs }}"
+  tags: install_into_systemd
+  become: yes

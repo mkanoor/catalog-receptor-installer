@@ -1,0 +1,115 @@
+---
+- name: Register with Redhat
+  include_tasks: subscribe.yml
+- name: Preflight checks
+  block:
+    - name: Can connect to the Ansible Tower with the given username/password
+      uri:
+        url: "{{ tower_url }}/api/v2/ping/"
+        user: "{{ tower_user }}"
+        force_basic_auth: true
+        validate_certs: "{{ tower_validate_certs }}"
+        password: "{{ tower_password }}"
+    - name: Can connect to cloud.redhat.com
+      uri:
+        url: "https://{{ c_rh_c_host }}/api"
+      environment:
+        http_proxy: "{{ http_proxy }}"
+        https_proxy: "{{ https_proxy }}"
+    - name: Receptor configuration directory exists
+      file:
+        path: "{{ receptor_config_dir }}"
+        state: directory
+    - name: Receptor data directory exists
+      file:
+        path: "{{ receptor_data_dir }}"
+        state: directory
+    - name: Get Client Certificate stats
+      stat:
+        path: "{{ system_cert_file }}"
+      register: cert_details
+    - fail:
+        msg: "You need to register your system using subscription manager"
+      when: not cert_details.stat.exists
+    - name: Get Client Key stats
+      stat:
+        path: "{{ system_key_file }}"
+      register: key_details
+    - fail:
+        msg: "You need to register your system using subscription manager"
+      when: not key_details.stat.exists
+#    - name: Install role dependencies
+#      yum:
+#        name: python2-jmespath
+#        state: installed
+- name: Install Receptor and Ansible Tower Plugin RPMs
+  block:
+  - name: Check if the packages are available
+    shell:
+      cmd: "dnf info {{ item }}"
+      warn: false
+    loop: "{{ receptor_packages }}"
+  - name: Install Receptor and Catalog Plugin RPMs
+    dnf:
+      name: "{{ receptor_packages }}"
+      state: installed
+    become: yes
+  when: install_receptor_from_rpm|bool
+- name: Extract account information from Ansible Tower and write configs
+  block:
+  - name: Identify Tower ID from Ansible Tower
+    uri:
+      url: "{{ tower_url }}/api/v2/ping"
+      user: "{{ tower_user }}"
+      password: "{{ tower_password }}"
+      return_content: yes
+      validate_certs: "{{ tower_validate_certs }}"
+      force_basic_auth: yes
+    register: tower_uuid_json
+  - name: Extract Tower ID from result
+    set_fact:
+      tower_uuid: "{{ tower_uuid_json | json_query('json.install_uuid') }}"
+  - name: Get source ids
+    include_tasks: get_source_ids.yml
+  - name: Get existing source info
+    include_tasks: get_existing_sources.yml
+    when: use_existing_receptor_node_id is defined and use_existing_receptor_node_id == 1
+  - name: List all organizations in Tower
+    uri:
+      url: "{{ tower_url }}/api/v2/organizations"
+      user: "{{ tower_user }}"
+      password: "{{ tower_password }}"
+      return_content: yes
+      validate_certs: "{{ tower_validate_certs }}"
+      force_basic_auth: yes
+    register: ansible_orgs_json
+  - name: Extract organization configuration per account and save to disk
+    include_tasks: extract_orgs.yml
+    loop: "{{ ansible_orgs_json.json | json_query('results[*].id') }}"
+    when: not org_id in skip_tower_org_id_list
+    loop_control:
+      loop_var: org_id
+  tags: query_ansible
+- name: Register Ansible Tower and Receptor with Sources
+  block:
+  - name: Gather installed account dirs
+    find:
+      file_type: directory
+      paths: "{{ receptor_config_dir }}"
+      patterns: "rh_ansible_*"
+    register: account_dirs_full_path
+  - name: Extract account dirs
+    set_fact:
+      account_dirs: "{{ account_dirs_full_path | json_query('files[*].path') | map('basename') | list }}"
+  - name: Set up Source with c.rh.c for each account
+    include_tasks: register_with_sources.yml
+    loop: "{{ account_dirs }}"
+    loop_control:
+      loop_var: account_dir
+  tags: register_with_sources
+- name: Include run locally
+  include_tasks: use_nohup.yml
+  when: skip_systemd is defined
+- name: Run with systemd
+  include_tasks: use_systemd.yml
+  when: skip_systemd is not defined

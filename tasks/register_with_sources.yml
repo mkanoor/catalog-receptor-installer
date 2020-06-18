@@ -1,0 +1,78 @@
+---
+- name: Extract node ID from configuration
+  set_fact:
+    receptor_node_id: "{{ lookup('ini', 'node_id section=default file='+receptor_config_dir+'/'+account_dir+'/receptor.conf') }}"
+- name: See if source already exists
+  uri:
+    url: "https://{{ c_rh_c_host }}/api/sources/v2.0/sources?source_ref={{ tower_uuid }}"
+    client_cert: "{{ system_cert_file }}"
+    client_key: "{{ system_key_file }}"
+    return_content: yes
+  register: existing_source_response
+- name: Create Source in c.rh.c
+  uri:
+    url: "https://{{ c_rh_c_host }}/api/sources/v2.0/sources"
+    client_cert: "{{ system_cert_file }}"
+    client_key: "{{ system_key_file }}"
+    method: "POST"
+    body:
+      name: "{{ source_display_name }}"
+      source_type_id: "{{ source_type_id }}"
+      source_ref: "{{ tower_uuid }}"
+    body_format: json
+    return_content: yes
+    status_code:
+      - 201
+  register: source_create_response
+  when: existing_source_response.json.meta.count == 0
+- name: Set source ID fact (just created)
+  set_fact:
+    source_id: "{{ source_create_response.json.id }}"
+  when: existing_source_response.json.meta.count == 0
+- name: Set source ID fact (pre-existing)
+  set_fact:
+    source_id: "{{ existing_source_response.json | json_query('data[0].id') }}"
+  when: existing_source_response.json.meta.count != 0
+- debug:
+    msg: "Source ID {{ source_id }}"
+- name: See if endpoint already exists
+  uri:
+    url: "https://{{ c_rh_c_host }}/api/sources/v2.0/endpoints?source_id={{ source_id }}"
+    client_cert: "{{ system_cert_file }}"
+    client_key: "{{ system_key_file }}"
+    return_content: yes
+  register: existing_endpoint_response
+- name: Add endpoint to Source
+  uri:
+    url: "https://{{ c_rh_c_host }}/api/sources/v2.0/endpoints"
+    client_cert: "{{ system_cert_file }}"
+    client_key: "{{ system_key_file }}"
+    method: "POST"
+    body:
+      source_id: "{{ source_id }}"
+      receptor_node: "{{ receptor_node_id }}"
+      default: yes
+    body_format: json
+    status_code:
+      - 201
+  when: existing_endpoint_response.json.meta.count == 0
+- name: See if application already exists
+  uri:
+    url: "https://{{ c_rh_c_host }}/api/sources/v2.0/applications?source_id={{ source_id }}&application_type_id={{ application_type_id }}"
+    client_cert: "{{ system_cert_file }}"
+    client_key: "{{ system_key_file }}"
+    return_content: yes
+  register: existing_application_response
+- name: Add application to Source
+  uri:
+    url: "https://{{ c_rh_c_host }}/api/sources/v2.0/applications"
+    client_cert: "{{ system_cert_file }}"
+    client_key: "{{ system_key_file }}"
+    method: "POST"
+    body:
+      source_id: "{{ source_id }}"
+      application_type_id: "{{ application_type_id }}"
+    body_format: json
+    status_code:
+      - 201
+  when: existing_application_response.json.meta.count == 0

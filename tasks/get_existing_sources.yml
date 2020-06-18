@@ -1,0 +1,29 @@
+- name: See if source already exists
+  uri:
+    url: "https://{{ c_rh_c_host }}/api/sources/v2.0/sources?source_ref={{ tower_uuid }}"
+    client_cert: "{{ system_cert_file }}"
+    client_key: "{{ system_key_file }}"
+    return_content: yes
+  register: existing_source_response
+- name: Set source ID fact (pre-existing)
+  set_fact:
+    source_id: "{{ existing_source_response.json | json_query('data[0].id') }}"
+  when: existing_source_response.json.meta.count != 0
+- debug:
+    msg: "Source ID {{ source_id }}"
+
+- name: See if endpoint already exists
+  uri:
+    url: "https://{{ c_rh_c_host }}/api/sources/v2.0/endpoints?source_id={{ source_id }}"
+    client_cert: "{{ system_cert_file }}"
+    client_key: "{{ system_key_file }}"
+    return_content: yes
+  register: existing_endpoint_response
+  when: source_id is defined
+- name: Set receptor node id fact (pre-existing)
+  set_fact:
+    existing_receptor_node_id: "{{ existing_endpoint_response.json | json_query('data[0].receptor_node') }}"
+  when: source_id is defined and existing_endpoint_response.json.meta.count != 0
+- debug:
+    msg: "Existing receptor node {{ existing_receptor_node_id }}"
+  when: source_id is defined

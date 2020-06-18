@@ -1,0 +1,25 @@
+---
+tower_url: "https://YourAnsibleServer"
+tower_user: "your_tower_username"
+tower_password: "your_tower_password"
+tower_ca_file: "/etc/pki/tls/certs/ca-bundle.crt"
+tower_validate_certs: yes
+rhn_user: "your_redhat_username"
+rhn_password: "your_redhat_password"
+receptor_config_dir: "/etc/receptor"
+receptor_data_dir: "/var/data/receptor"
+install_receptor_from_rpm: yes
+system_cert_file: "/etc/pki/consumer/cert.pem"
+system_key_file: "/etc/pki/consumer/key.pem"
+rhn_subscription_url: "https://subscription.rhsm.redhat.com/subscription"
+http_proxy: ""
+https_proxy: ""
+receptor_packages:
+  - receptor
+  - receptor-catalog
+c_rh_c_host: "cloud.redhat.com"
+skip_tower_org_id_list:
+  - 0
+source_display_name: "{{ tower_url|urlsplit('hostname') }}"
+skip_systemd: 1
+use_existing_receptor_node_id: 1

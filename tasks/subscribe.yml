@@ -1,0 +1,9 @@
+---
+  - name: Check if the system is already registered with RHSM
+    stat:
+      path: "{{ system_cert_file }}"
+    register: cert_details
+  - name: Register the system with Redhat Subscription Manager
+    shell:
+      cmd: "subscription-manager register --force --serverurl {{ rhn_subscription_url }} --username {{ rhn_user }}  --password  {{ rhn_password }}"
+    when: not cert_details.stat.exists

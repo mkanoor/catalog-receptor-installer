@@ -1,0 +1,18 @@
+[default]
+node_id={{ lookup('file', receptor_config_dir+'/rh_ansible_'+tower_account_id+'/uuid') }}
+
+[plugin_receptor_catalog]
+username={{ tower_user }}
+password={{ tower_password }}
+url={{ tower_url }}
+ca_file={{ tower_ca_file }}
+verify_ssl={{ tower_validate_certs }}
+
+[node]
+peers=wss://{{ c_rh_c_host }}/wss/receptor-controller/gateway
+server_disable=true
+ws_heartbeat=1800
+
+[auth]
+client_cert=/etc/pki/consumer/cert.pem
+client_key=/etc/pki/consumer/key.pem
