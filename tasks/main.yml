@@ -46,11 +46,11 @@
   block:
   - name: Check if the packages are available
     command:
-      cmd: "dnf info {{ item }}"
+      cmd: "yum info {{ item }}"
       warn: false
     loop: "{{ receptor_packages }}"
   - name: Install Receptor and Catalog Plugin RPMs
-    dnf:
+    yum:
       name: "{{ receptor_packages }}"
       state: installed
     become: yes
