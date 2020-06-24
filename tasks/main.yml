@@ -28,14 +28,16 @@
       stat:
         path: "{{ system_cert_file }}"
       register: cert_details
-    - fail:
+    - name: Check the Certificate stats
+      fail:
         msg: "You need to register your system using subscription manager"
       when: not cert_details.stat.exists
     - name: Get Client Key stats
       stat:
         path: "{{ system_key_file }}"
       register: key_details
-    - fail:
+    - name: Check the Key file stats
+      fail:
         msg: "You need to register your system using subscription manager"
       when: not key_details.stat.exists
 #    - name: Install role dependencies
