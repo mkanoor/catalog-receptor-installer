@@ -10,7 +10,7 @@
         force_basic_auth: true
         validate_certs: "{{ tower_validate_certs }}"
         password: "{{ tower_password }}"
-    - name: Can connect to cloud.redhat.com
+    - name: "Can connect to {{ c_rh_c_host }}"
       uri:
         url: "https://{{ c_rh_c_host }}/api"
       environment:

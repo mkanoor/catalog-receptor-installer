@@ -2,7 +2,6 @@
 tower_url: "https://YourAnsibleServer"
 tower_user: "your_tower_username"
 tower_password: "your_tower_password"
-tower_ca_file: "/etc/pki/tls/certs/ca-bundle.crt"
 tower_validate_certs: yes
 rhn_user: "your_redhat_username"
 rhn_password: "your_redhat_password"

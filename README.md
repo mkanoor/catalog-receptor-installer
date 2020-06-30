@@ -22,12 +22,11 @@ Role Variables
 * `tower_url` - The base URL for the Ansible Tower API
 * `tower_user` - The user to connect to the Ansible Tower API with
 * `tower_password` - The password to authenticate against the  Ansible Tower API with
-* `tower_ca_file` - The path to the CA file to validate Tower's certificate (default: `/etc/pki/tls/certs/ca-bundle.crt`)
 * `tower_validate_certs` - Whether to validate the Tower certificate is trusted (default: `yes`)
 * `install_receptor_from_rpm` - Whether you want the role to install Receptor and Catalog Plugin for you (default: `yes`)
 * `receptor_config_dir` - The path to Receptor's configuration files (default: `/etc/receptor`)
 * `receptor_data_dir` - The path to Receptor's data files (default: `/var/data/receptor`)
-* `receptor_packages` - The packages required to be installed for Receptor to work (default: `receptor` and `python3-receptor-catalog`)
+* `receptor_packages` - The packages required to be installed for Receptor to work (default: `receptor` and `receptor-catalog`)
 * `c_rh_c_host` - The API endpoint to connect to for cloud.redhat.com (default: `cloud.redhat.com`)
 * `source_display_name` - The name for this Ansible Tower in Sources on cloud.redhat.com (default: the hostname of the `tower_url`)
 
