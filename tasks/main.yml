@@ -67,8 +67,6 @@
   - name: Get existing source info
     include_tasks: get_existing_sources.yml
     when: use_existing_receptor_node_id is defined and use_existing_receptor_node_id == 1
-  - debug:
-      msg: "Ansible orgs json {{ ansible_orgs_json }}"
   - name: Extract organization configuration per account and save to disk
     include_tasks: extract_orgs.yml
     loop: "{{ ansible_orgs_json.json | json_query('results[*].id') }}"
@@ -93,7 +91,7 @@
     loop_control:
       loop_var: account_dir
   tags: register_with_sources
-- name: Gennerate Shell Scripts
+- name: Generate Shell Scripts
   include_tasks: use_local_script.yml
   when: skip_systemd is defined
 - name: Run with systemd
