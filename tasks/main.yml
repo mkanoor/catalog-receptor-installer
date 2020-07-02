@@ -37,8 +37,12 @@
 #      yum:
 #        name: python2-jmespath
 #        state: installed
-- name: Get Ansible Tower Info
-  include_tasks: ansible_tower_tasks.yml
+- name: Get Ansible Tower Info using tokens
+  include_tasks: ansible_tower_tasks_with_token.yml
+  when: tower_token | length > 0
+- name: Get Ansible Tower Info using tokens
+  include_tasks: ansible_tower_tasks_with_userid_password.yml
+  when: tower_token | length == 0
 - name: Install Receptor and Ansible Tower Plugin RPMs
   block:
   - name: Check if the packages are available

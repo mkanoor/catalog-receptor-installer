@@ -1,0 +1,16 @@
+---
+- name: Can connect to the Ansible Tower with token
+  uri:
+    url: "{{ tower_url }}/api/v2/ping/"
+    validate_certs: "{{ tower_validate_certs }}"
+    headers:
+      Authorization: "Bearer {{ tower_token }}"
+  register: tower_uuid_json
+- name: List all organizations in Tower using token
+  uri:
+    url: "{{ tower_url }}/api/v2/organizations"
+    return_content: yes
+    validate_certs: "{{ tower_validate_certs }}"
+    headers:
+      Authorization: "Bearer {{ tower_token }}"
+  register: ansible_orgs_json
