@@ -16,7 +16,8 @@
         source_id: "{{ existing_source_response.json | json_query('data[0].id') }}"
       when: existing_source_response.json.meta.count != 0
     - debug:
-        msg: "Source ID {{ source_id }}"
+        msg: "Existing Source ID {{ source_id }}"
+      when: source_id is defined
 
     - name: See if endpoint already exists
       uri:
