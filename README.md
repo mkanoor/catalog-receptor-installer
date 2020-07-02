@@ -20,8 +20,9 @@ Role Variables
 * `rhn_user` - The RHN user to use if the system is not registered 
 * `rhn_password` - The RHN password to use if the system is not registered 
 * `tower_url` - The base URL for the Ansible Tower API
-* `tower_user` - The user to connect to the Ansible Tower API with
-* `tower_password` - The password to authenticate against the  Ansible Tower API with
+* `tower_token` - The preferred way to connect to the Ansible Tower as specified here https://docs.ansible.com/ansible-tower/latest/html/administration/oauth2_token_auth.html
+* `tower_user` - In lieu of token you can set user to connect to the Ansible Tower API with
+* `tower_password` - In lieu of token you can set the password to authenticate against the  Ansible Tower API with
 * `tower_validate_certs` - Whether to validate the Tower certificate is trusted (default: `yes`)
 * `install_receptor_from_rpm` - Whether you want the role to install Receptor and Catalog Plugin for you (default: `yes`)
 * `receptor_config_dir` - The path to Receptor's configuration files (default: `/etc/receptor`)
