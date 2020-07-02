@@ -3,13 +3,6 @@
   include_tasks: subscribe.yml
 - name: Preflight checks
   block:
-    - name: Can connect to the Ansible Tower with the given username/password
-      uri:
-        url: "{{ tower_url }}/api/v2/ping/"
-        user: "{{ tower_user }}"
-        force_basic_auth: true
-        validate_certs: "{{ tower_validate_certs }}"
-        password: "{{ tower_password }}"
     - name: "Can connect to {{ c_rh_c_host }}"
       uri:
         url: "https://{{ c_rh_c_host }}/api"
@@ -44,6 +37,8 @@
 #      yum:
 #        name: python2-jmespath
 #        state: installed
+- name: Get Ansible Tower Info
+  include_tasks: ansible_tower_tasks.yml
 - name: Install Receptor and Ansible Tower Plugin RPMs
   block:
   - name: Check if the packages are available
@@ -60,15 +55,6 @@
   when: install_receptor_from_rpm|bool
 - name: Extract account information from Ansible Tower and write configs
   block:
-  - name: Identify Tower ID from Ansible Tower
-    uri:
-      url: "{{ tower_url }}/api/v2/ping"
-      user: "{{ tower_user }}"
-      password: "{{ tower_password }}"
-      return_content: yes
-      validate_certs: "{{ tower_validate_certs }}"
-      force_basic_auth: yes
-    register: tower_uuid_json
   - name: Extract Tower ID from result
     set_fact:
       tower_uuid: "{{ tower_uuid_json | json_query('json.install_uuid') }}"
@@ -77,15 +63,6 @@
   - name: Get existing source info
     include_tasks: get_existing_sources.yml
     when: use_existing_receptor_node_id is defined and use_existing_receptor_node_id == 1
-  - name: List all organizations in Tower
-    uri:
-      url: "{{ tower_url }}/api/v2/organizations"
-      user: "{{ tower_user }}"
-      password: "{{ tower_password }}"
-      return_content: yes
-      validate_certs: "{{ tower_validate_certs }}"
-      force_basic_auth: yes
-    register: ansible_orgs_json
   - name: Extract organization configuration per account and save to disk
     include_tasks: extract_orgs.yml
     loop: "{{ ansible_orgs_json.json | json_query('results[*].id') }}"
