@@ -3,8 +3,7 @@ node_id={{ lookup('file', receptor_config_dir+'/rh_ansible_'+tower_account_id+'/
 debug=False
 
 [plugin_receptor_catalog]
-username={{ tower_user }}
-password={{ tower_password }}
+token={{ tower_token }}
 url={{ tower_url }}
 verify_ssl={{ tower_validate_certs }}
 

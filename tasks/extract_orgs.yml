@@ -33,9 +33,16 @@
         {{ existing_receptor_node_id }}
     when: existing_receptor_node_id is defined
 
-  - name: "Write Receptor configuration for account {{ tower_account_id }}"
+  - name: "Write Receptor configuration for account {{ tower_account_id }} using token"
+    template:
+      dest: "{{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}/receptor.conf"
+      mode: 0400
+      src: receptor_token.conf.j2
+    when: tower_token | length > 0
+  - name: "Write Receptor configuration for account {{ tower_account_id }} using userid/password"
     template:
       dest: "{{ receptor_config_dir }}/rh_ansible_{{ tower_account_id }}/receptor.conf"
       mode: 0400
       src: receptor.conf.j2
+    when: tower_token | length == 0
   when: tower_account_id | length > 0
