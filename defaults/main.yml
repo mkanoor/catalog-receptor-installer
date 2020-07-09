@@ -15,8 +15,7 @@ rhn_subscription_url: "https://subscription.rhsm.redhat.com/subscription"
 http_proxy: ""
 https_proxy: ""
 receptor_packages:
-  - receptor
-  - receptor-catalog
+  - python3-receptor-catalog
 c_rh_c_host: "cloud.redhat.com"
 skip_tower_org_id_list:
   - 0
