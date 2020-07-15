@@ -15,10 +15,10 @@
       set_fact:
         source_id: "{{ existing_source_response.json | json_query('data[0].id') }}"
       when: existing_source_response.json.meta.count != 0
-    - name:
+    - name: Fail if the source already exists and we cannot use existing source
       fail:
         msg: "Source already exists ID {{ source_id }}. Please delete it first"
-      when: source_id is defined and use_existing_source != 0
+      when: source_id is defined and use_existing_source == 0
 
     - name: See if endpoint already exists
       uri:

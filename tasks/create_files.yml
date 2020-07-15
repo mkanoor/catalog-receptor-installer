@@ -1,10 +1,10 @@
 ---
-- name: "Make configuration directory"
+- name: Make configuration directory
   file:
     path: "{{ receptor_config_dir }}/rh_ansible_tower"
     state: directory
     mode: 0755
-- name: "Make data directory"
+- name: Make data directory
   file:
     path: "{{ receptor_data_dir }}/rh_ansible_tower"
     state: directory
