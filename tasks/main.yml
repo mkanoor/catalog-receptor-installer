@@ -55,6 +55,9 @@
   when: install_receptor_from_rpm|bool
 - name: Extract account information from Ansible Tower and write configs
   block:
+  - name: Extract Tower ID from result
+    set_fact:
+      tower_uuid: "{{ tower_uuid_json | json_query('json.install_uuid') }}"
   - name: Get source ids
     include_tasks: get_source_ids.yml
   - name: Get existing source info
