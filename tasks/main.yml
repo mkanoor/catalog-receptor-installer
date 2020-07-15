@@ -33,14 +33,10 @@
       fail:
         msg: "You need to register your system using subscription manager"
       when: not key_details.stat.exists
-#    - name: Install role dependencies
-#      yum:
-#        name: python2-jmespath
-#        state: installed
 - name: Get Ansible Tower Info using tokens
   include_tasks: ansible_tower_tasks_with_token.yml
   when: tower_token | length > 0
-- name: Get Ansible Tower Info using tokens
+- name: Get Ansible Tower Info using userid/password
   include_tasks: ansible_tower_tasks_with_userid_password.yml
   when: tower_token | length == 0
 - name: Install Receptor and Ansible Tower Plugin RPMs
@@ -59,20 +55,13 @@
   when: install_receptor_from_rpm|bool
 - name: Extract account information from Ansible Tower and write configs
   block:
-  - name: Extract Tower ID from result
-    set_fact:
-      tower_uuid: "{{ tower_uuid_json | json_query('json.install_uuid') }}"
   - name: Get source ids
     include_tasks: get_source_ids.yml
   - name: Get existing source info
     include_tasks: get_existing_sources.yml
     when: use_existing_receptor_node_id is defined and use_existing_receptor_node_id == 1
-  - name: Extract organization configuration per account and save to disk
-    include_tasks: extract_orgs.yml
-    loop: "{{ ansible_orgs_json.json | json_query('results[*].id') }}"
-    when: not org_id in skip_tower_org_id_list
-    loop_control:
-      loop_var: org_id
+  - name: Create required files
+    include_tasks: create_files.yml
   tags: query_ansible
 - name: Register Ansible Tower and Receptor with Sources
   block:

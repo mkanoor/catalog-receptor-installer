@@ -1,0 +1,40 @@
+---
+- name: "Make configuration directory"
+  file:
+    path: "{{ receptor_config_dir }}/rh_ansible_tower"
+    state: directory
+    mode: 0755
+- name: "Make data directory"
+  file:
+    path: "{{ receptor_data_dir }}/rh_ansible_tower"
+    state: directory
+    mode: 0755
+- name: Generate a new UUID
+  command:
+    cmd: uuidgen
+  register: uuid_output
+- name: Save UUID for this Receptor node
+  copy:
+    dest: "{{ receptor_config_dir }}/rh_ansible_tower/uuid"
+    content: |
+      {{ uuid_output.stdout }}
+  when: existing_receptor_node_id is not defined
+- name: Generate a UUID file from existing receptor_node_id
+  copy:
+    dest: "{{ receptor_config_dir }}/rh_ansible_tower/uuid"
+    content: |
+      {{ existing_receptor_node_id }}
+  when: existing_receptor_node_id is defined
+
+- name: "Write Receptor configuration using token"
+  template:
+    dest: "{{ receptor_config_dir }}/rh_ansible_tower/receptor.conf"
+    mode: 0400
+    src: receptor_token.conf.j2
+  when: tower_token | length > 0
+- name: "Write Receptor configuration using userid/password"
+  template:
+    dest: "{{ receptor_config_dir }}/rh_ansible_tower/receptor.conf"
+    mode: 0400
+    src: receptor.conf.j2
+  when: tower_token | length == 0
