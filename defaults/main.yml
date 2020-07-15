@@ -13,7 +13,6 @@ system_cert_file: "/etc/pki/consumer/cert.pem"
 system_key_file: "/etc/pki/consumer/key.pem"
 rhn_subscription_url: "https://subscription.rhsm.redhat.com/subscription"
 http_proxy: ""
-https_proxy: ""
 receptor_packages:
   - python3-receptor-catalog
 c_rh_c_host: "cloud.redhat.com"

@@ -2,7 +2,6 @@
 - name: Set proxy environment variables
   environment:
     http_proxy: "{{ http_proxy }}"
-    https_proxy: "{{ https_proxy }}"
   block:
     - name: Extract node ID from configuration
       set_fact:
