@@ -17,5 +17,4 @@ receptor_packages:
   - python3-receptor-catalog
 c_rh_c_host: "cloud.redhat.com"
 source_display_name: "{{ tower_url|urlsplit('hostname') }}"
-use_existing_receptor_node_id: 1
 use_existing_source: 0

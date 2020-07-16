@@ -61,7 +61,6 @@
     include_tasks: get_source_ids.yml
   - name: Get existing source info
     include_tasks: get_existing_sources.yml
-    when: use_existing_receptor_node_id is defined and use_existing_receptor_node_id == 1
   - name: Create required files
     include_tasks: create_files.yml
   tags: query_ansible
