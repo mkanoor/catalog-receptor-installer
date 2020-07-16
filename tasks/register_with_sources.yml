@@ -13,7 +13,7 @@
         client_key: "{{ system_key_file }}"
         return_content: yes
       register: existing_source_response
-    - name: Create Source in c.rh.c
+    - name: " Create Source in {{ c_rh_c_host }}"
       uri:
         url: "https://{{ c_rh_c_host }}/api/sources/v2.0/sources"
         client_cert: "{{ system_cert_file }}"
@@ -37,8 +37,6 @@
       set_fact:
         source_id: "{{ existing_source_response.json | json_query('data[0].id') }}"
       when: existing_source_response.json.meta.count != 0
-    - debug:
-        msg: "Source ID {{ source_id }}"
     - name: See if endpoint already exists
       uri:
         url: "https://{{ c_rh_c_host }}/api/sources/v2.0/endpoints?source_id={{ source_id }}"
