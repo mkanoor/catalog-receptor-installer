@@ -6,7 +6,7 @@
     - name: Extract node ID from configuration
       set_fact:
         receptor_node_id: "{{ lookup('ini', 'node_id section=default file='+receptor_config_dir+'/'+account_dir+'/receptor.conf') }}"
-    - name: " Create Source in {{ c_rh_c_host }}"
+    - name: "Create Source in {{ c_rh_c_host }}"
       uri:
         url: "https://{{ c_rh_c_host }}/api/sources/v2.0/sources"
         client_cert: "{{ system_cert_file }}"
