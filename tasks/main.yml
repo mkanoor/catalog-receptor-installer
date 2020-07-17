@@ -52,7 +52,6 @@
     yum:
       name: "{{ receptor_packages }}"
       state: installed
-      disable_gpg_check: yes
     become: yes
   when: install_receptor_from_rpm|bool
 - name: Extract account information from Ansible Tower and write configs
