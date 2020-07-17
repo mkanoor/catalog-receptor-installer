@@ -3,6 +3,9 @@
   include_tasks: subscribe.yml
 - name: Preflight checks
   block:
+    - name: Set the Tower URL
+      set_fact:
+        tower_url: "{{ tower_url | regex_replace('\\/$', '') }}"
     - name: "Can connect to {{ c_rh_c_host }}"
       uri:
         url: "https://{{ c_rh_c_host }}/api"
