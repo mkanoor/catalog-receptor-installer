@@ -18,7 +18,7 @@ Role Variables
 --------------
 
 * `tower_url` - Required - The URL for Ansible Tower 
-* `tower_token` - Required - Application Tokens is preferred way to connect to the Ansible Tower as specified here https://docs.ansible.com/ansible-tower/latest/html/administration/oauth2_token_auth.html
+* `tower_token` - Required - Application Tokens is preferred way to connect to the Ansible Tower as specified here https://docs.ansible.com/ansible-tower/latest/html/administration/oauth2_token_auth.html. Since we launch job templates we need "Write" Access on the token.
 * `rhn_user` - The RHN user to use if the system is not registered 
 * `rhn_password` - The RHN password to use if the system is not registered 
 * `tower_user` - In lieu of token you can set user to connect to the Ansible Tower API with
