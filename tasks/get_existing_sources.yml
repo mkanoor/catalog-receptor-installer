@@ -17,7 +17,7 @@
     - name: Fail if the source already exists and we cannot use existing source
       fail:
         msg: "Source already exists ID {{ source_id }}. Please delete it first"
-      when: source_id is defined and use_existing_source == 0
+      when: source_id is defined and and not use_existing_source|bool
 
     - name: See if endpoint already exists
       uri:
