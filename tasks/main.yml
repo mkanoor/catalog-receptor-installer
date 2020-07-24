@@ -1,6 +1,9 @@
 ---
 - name: Register with Redhat
   include_tasks: subscribe.yml
+- name: Perform QA specific tasks
+  include_tasks: qa_tasks.yml
+  when: qa_repo is defined
 - name: Preflight checks
   block:
     - name: Set the Tower URL
@@ -35,6 +38,13 @@
       fail:
         msg: "You need to register your system using subscription manager"
       when: not key_details.stat.exists
+    - name: Install jmespath on RHEL7 only
+      yum:
+        name: python2-jmespath
+        state: installed
+      become: yes
+      when: ansible_distribution == "RedHat" and ansible_distribution_major_version == '7'
+
 - name: Get Ansible Tower Info using tokens
   include_tasks: ansible_tower_tasks_with_token.yml
   when: tower_token | length > 0
