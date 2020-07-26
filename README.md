@@ -30,6 +30,7 @@ Role Variables
 * `receptor_packages` - The packages required to be installed for Receptor to work (default: `python3-receptor-catalog`)
 * `c_rh_c_host` - The API endpoint to connect to for cloud.redhat.com (default: `cloud.redhat.com`)
 * `source_display_name` - The name for this Ansible Tower in Sources on cloud.redhat.com (default: the hostname of the `tower_url`)
+* `use_existing_source` - yes|no. If the source already exists in the cloud.redhat.com should it be reused? (default: `no`)
 
 License
 -------
