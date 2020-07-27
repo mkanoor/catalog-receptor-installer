@@ -1,6 +1,6 @@
 galaxy_info:
   author: mkanoor
-  description: A role to install Redhat Receptor and Catalog Plugin to communicate with an on premise Red Hat Ansible Tower
+  description: A role to install Redhat Receptor and Catalog Plugin to allow for communication between cloud.redhat.com and an on premise Red Hat Ansible Tower
   company: Red Hat
 
   # If the issue tracker for your role is not on github, uncomment the
