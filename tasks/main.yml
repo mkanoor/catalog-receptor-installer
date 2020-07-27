@@ -44,7 +44,14 @@
         state: installed
       become: yes
       when: ansible_distribution == "RedHat" and ansible_distribution_major_version == '7'
-
+    - name: Check if systemd is available
+      command: pgrep systemd
+      register: cmd_output
+      ignore_errors: yes
+    - name: Set the use systemd flag
+      set_fact:
+        use_systemd: true
+      when: cmd_output.rc == 0
 - name: Get Ansible Tower Info using tokens
   include_tasks: ansible_tower_tasks_with_token.yml
   when: tower_token | length > 0
@@ -95,7 +102,7 @@
   tags: register_with_sources
 - name: Generate Shell Scripts
   include_tasks: use_local_script.yml
-  when: skip_systemd is defined
+  when: use_systemd is not defined
 - name: Run with systemd
   include_tasks: use_systemd.yml
-  when: skip_systemd is not defined
+  when: use_systemd is defined
