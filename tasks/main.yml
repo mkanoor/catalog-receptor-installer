@@ -1,4 +1,8 @@
 ---
+- name: Check the version of python running
+  fail:
+    msg: "You are running python version {{ ansible_python_version }} you need to have version 3.6.0 or above"
+  when: ansible_python_version is version('3.6.0', '<')
 - name: Register with Redhat
   include_tasks: subscribe.yml
 - name: Perform QA specific tasks
