@@ -1,8 +1,14 @@
 ---
+- name: Get Version of python3
+  command: python3 --version
+  register: py_cmd
+- name: Set the python3 version
+  set_fact:
+    python3_version: "{{ py_cmd.stdout.split(' ')[-1] }}"
 - name: Check the version of python running
   fail:
-    msg: "You are running python version {{ ansible_python_version }} you need to have version 3.6.0 or above"
-  when: ansible_python_version is version('3.6.0', '<')
+    msg: "You are running python3 version {{ python3_version }} you need to have version 3.6.0 or above"
+  when: python3_version is version('3.6.0', '<')
 - name: Register with Redhat
   include_tasks: subscribe.yml
 - name: Perform QA specific tasks
