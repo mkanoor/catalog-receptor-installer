@@ -2,6 +2,7 @@
 - name: Get Version of python3
   command: python3 --version
   register: py_cmd
+  changed_when: False
 - name: Set the python3 version
   set_fact:
     python3_version: "{{ py_cmd.stdout.split(' ')[-1] }}"
