@@ -117,3 +117,12 @@
 - name: Run with systemd
   include_tasks: use_systemd.yml
   when: use_systemd is defined
+- name: "Trigger {{ c_rh_c_host }} to detect this receptor"
+  uri:
+    url: "https://{{ c_rh_c_host }}/api/sources/v2.0/sources/{{ source_id }}/check_availability"
+    client_cert: "{{ system_cert_file }}"
+    client_key: "{{ system_key_file }}"
+    method: "POST"
+    status_code:
+      - 202
+  when: source_id is defined
