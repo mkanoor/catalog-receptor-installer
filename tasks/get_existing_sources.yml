@@ -5,7 +5,7 @@
   block:
     - name: See if source already exists
       uri:
-        url: "https://{{ c_rh_c_host }}/api/sources/v2.0/sources?source_ref={{ tower_uuid }}"
+        url: "https://{{ c_rh_c_host }}/api/sources/v3.0/sources?source_ref={{ tower_uuid }}"
         client_cert: "{{ system_cert_file }}"
         client_key: "{{ system_key_file }}"
         return_content: yes
@@ -21,7 +21,7 @@
 
     - name: See if endpoint already exists
       uri:
-        url: "https://{{ c_rh_c_host }}/api/sources/v2.0/endpoints?source_id={{ source_id }}"
+        url: "https://{{ c_rh_c_host }}/api/sources/v3.0/endpoints?source_id={{ source_id }}"
         client_cert: "{{ system_cert_file }}"
         client_key: "{{ system_key_file }}"
         return_content: yes

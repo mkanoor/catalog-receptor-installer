@@ -122,7 +122,7 @@
     timeout: 30
 - name: "Trigger {{ c_rh_c_host }} to detect this receptor"
   uri:
-    url: "https://{{ c_rh_c_host }}/api/sources/v2.0/sources/{{ source_id }}/check_availability"
+    url: "https://{{ c_rh_c_host }}/api/sources/v3.0/sources/{{ source_id }}/check_availability"
     client_cert: "{{ system_cert_file }}"
     client_key: "{{ system_key_file }}"
     method: "POST"

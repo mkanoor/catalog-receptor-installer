@@ -8,7 +8,7 @@
         receptor_node_id: "{{ lookup('ini', 'node_id section=default file='+receptor_config_dir+'/'+account_dir+'/receptor.conf') }}"
     - name: "Create Source in {{ c_rh_c_host }}"
       uri:
-        url: "https://{{ c_rh_c_host }}/api/sources/v2.0/sources"
+        url: "https://{{ c_rh_c_host }}/api/sources/v3.0/sources"
         client_cert: "{{ system_cert_file }}"
         client_key: "{{ system_key_file }}"
         method: "POST"
@@ -28,14 +28,14 @@
       when: source_id is not defined
     - name: See if endpoint already exists
       uri:
-        url: "https://{{ c_rh_c_host }}/api/sources/v2.0/endpoints?source_id={{ source_id }}"
+        url: "https://{{ c_rh_c_host }}/api/sources/v3.0/endpoints?source_id={{ source_id }}"
         client_cert: "{{ system_cert_file }}"
         client_key: "{{ system_key_file }}"
         return_content: yes
       register: existing_endpoint_response
     - name: Add endpoint to Source if it does not exist
       uri:
-        url: "https://{{ c_rh_c_host }}/api/sources/v2.0/endpoints"
+        url: "https://{{ c_rh_c_host }}/api/sources/v3.0/endpoints"
         client_cert: "{{ system_cert_file }}"
         client_key: "{{ system_key_file }}"
         method: "POST"
@@ -49,14 +49,14 @@
       when: existing_endpoint_response.json.meta.count == 0
     - name: See if application already exists
       uri:
-        url: "https://{{ c_rh_c_host }}/api/sources/v2.0/applications?source_id={{ source_id }}&application_type_id={{ application_type_id }}"
+        url: "https://{{ c_rh_c_host }}/api/sources/v3.0/applications?source_id={{ source_id }}&application_type_id={{ application_type_id }}"
         client_cert: "{{ system_cert_file }}"
         client_key: "{{ system_key_file }}"
         return_content: yes
       register: existing_application_response
     - name: Add application to Source if it does not exist
       uri:
-        url: "https://{{ c_rh_c_host }}/api/sources/v2.0/applications"
+        url: "https://{{ c_rh_c_host }}/api/sources/v3.0/applications"
         client_cert: "{{ system_cert_file }}"
         client_key: "{{ system_key_file }}"
         method: "POST"
