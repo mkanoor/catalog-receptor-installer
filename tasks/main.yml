@@ -14,7 +14,6 @@
   include_tasks: subscribe.yml
 - name: Perform QA specific tasks
   include_tasks: qa_tasks.yml
-  when: qa_repo is defined
 - name: Preflight checks
   block:
     - name: Set the Tower URL
