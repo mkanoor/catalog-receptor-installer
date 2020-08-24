@@ -15,6 +15,6 @@ rhn_subscription_url: "https://subscription.rhsm.redhat.com/subscription"
 http_proxy: ""
 receptor_packages:
   - python3-receptor-catalog
-c_rh_c_host: "cloud.redhat.com"
+c_rh_c_host: "cert.cloud.redhat.com"
 source_display_name: "{{ tower_url|urlsplit('hostname') }}"
 use_existing_source: no
