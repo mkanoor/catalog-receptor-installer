@@ -1,17 +1,22 @@
 ---
-- name: "Downloading QA Repository"
-  get_url:
-    url: "{{ qa_repo }}"
-    dest: "/etc/yum.repos.d/{{ qa_repo|basename }}"
-    mode: '0440'
-  when: qa_repo is defined
-- name: "Update the CA Certs"
+- name: Set proxy environment variables
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
   block:
-    - name: "Downloading CA Cert {{ qa_ca_cert|basename }}"
+    - name: "Downloading QA Repository"
       get_url:
-        url: "{{ qa_ca_cert }}"
-        dest: "/etc/pki/ca-trust/source/anchors/{{ qa_ca_cert|basename }}"
+        url: "{{ qa_repo }}"
+        dest: "/etc/yum.repos.d/{{ qa_repo|basename }}"
         mode: '0440'
-    - name: Update the CA Cert
-      command: update-ca-trust
-  when: qa_ca_cert is defined
+      when: qa_repo is defined
+    - name: "Update the CA Certs"
+      block:
+        - name: "Downloading CA Cert {{ qa_ca_cert|basename }}"
+          get_url:
+            url: "{{ qa_ca_cert }}"
+            dest: "/etc/pki/ca-trust/source/anchors/{{ qa_ca_cert|basename }}"
+            mode: '0440'
+        - name: Update the CA Cert
+          command: update-ca-trust
+      when: qa_ca_cert is defined

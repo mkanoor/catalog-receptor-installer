@@ -24,6 +24,7 @@
         url: "https://{{ c_rh_c_host }}/api"
       environment:
         http_proxy: "{{ http_proxy }}"
+        https_proxy: "{{ http_proxy }}"
     - name: Receptor configuration directory exists
       file:
         path: "{{ receptor_config_dir }}"
@@ -127,4 +128,7 @@
     method: "POST"
     status_code:
       - 202
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
   when: source_id is defined

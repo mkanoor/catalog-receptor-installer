@@ -1,21 +1,26 @@
 ---
-- name: Identify Ansible Tower source type
-  uri:
-    url: "https://{{ c_rh_c_host }}/api/sources/v3.0/source_types?name=ansible-tower"
-    client_cert: "{{ system_cert_file }}"
-    client_key: "{{ system_key_file }}"
-    return_content: yes
-  register: source_types_response
-- name: Extract Ansible source type from response
-  set_fact:
-    source_type_id: "{{ source_types_response.json | json_query('data[0].id') }}"
-- name: Identify application type ID
-  uri:
-    url: "https://{{ c_rh_c_host }}/api/sources/v3.0/application_types?name=%2Finsights%2Fplatform%2Fcatalog"
-    client_cert: "{{ system_cert_file }}"
-    client_key: "{{ system_key_file }}"
-    return_content: yes
-  register: application_types_response
-- name: Set application type ID fact
-  set_fact:
-    application_type_id: "{{ application_types_response.json | json_query('data[0].id') }}"
+- name: Set proxy environment variables
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
+  block:
+    - name: Identify Ansible Tower source type
+      uri:
+        url: "https://{{ c_rh_c_host }}/api/sources/v3.0/source_types?name=ansible-tower"
+        client_cert: "{{ system_cert_file }}"
+        client_key: "{{ system_key_file }}"
+        return_content: yes
+      register: source_types_response
+    - name: Extract Ansible source type from response
+      set_fact:
+        source_type_id: "{{ source_types_response.json | json_query('data[0].id') }}"
+    - name: Identify application type ID
+      uri:
+        url: "https://{{ c_rh_c_host }}/api/sources/v3.0/application_types?name=%2Finsights%2Fplatform%2Fcatalog"
+        client_cert: "{{ system_cert_file }}"
+        client_key: "{{ system_key_file }}"
+        return_content: yes
+      register: application_types_response
+    - name: Set application type ID fact
+      set_fact:
+        application_type_id: "{{ application_types_response.json | json_query('data[0].id') }}"
