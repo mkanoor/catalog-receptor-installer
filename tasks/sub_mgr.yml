@@ -6,5 +6,7 @@
 - name: Attach Pool ID's
   command: "subscription-manager attach --pool {{ item }}"
   loop: "{{ sub_cmd.stdout_lines }}"
+  changed_when: True
 - name: "Enable the repository {{ asc_package_name[ansible_distribution_major_version] }}"
   command: "subscription-manager repos --enable {{ asc_package_name[ansible_distribution_major_version] }}"
+  changed_when: True
