@@ -12,6 +12,8 @@
   when: python3_version is version('3.6.0', '<')
 - name: Register with Redhat
   include_tasks: subscribe.yml
+- name: Enable repositories
+  include_tasks: sub_mgr.yml
 - name: Perform QA specific tasks
   include_tasks: qa_tasks.yml
 - name: Preflight checks
