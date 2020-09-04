@@ -1,8 +1,8 @@
 ---
-- name: "Check if we have package for RHEL{{ ansible_distribution_major_version }}"
+- name: "Check if we have repository name for RHEL{{ ansible_distribution_major_version }}"
   fail:
-     msg: "Automation Service Catalog package not defined for RHEL{{ ansible_distribution_major_version }}"
-  when: ansible_distribution_major_version not in asc_package_name.keys()
+     msg: "Automation Service Catalog repository name not defined for RHEL{{ ansible_distribution_major_version }}"
+  when: ansible_distribution_major_version not in asc_repository_name.keys()
 - name: "Get Pool Ids for SKU {{ rhsm_asc_sku }}"
   command: "subscription-manager list --available --matches={{ rhsm_asc_sku }} --pool-only"
   register: sub_cmd
@@ -11,6 +11,6 @@
   command: "subscription-manager attach --pool {{ item }}"
   loop: "{{ sub_cmd.stdout_lines }}"
   changed_when: True
-- name: "Enable the repository {{ asc_package_name[ansible_distribution_major_version] }}"
-  command: "subscription-manager repos --enable {{ asc_package_name[ansible_distribution_major_version] }}"
+- name: "Enable the repository {{ asc_repository_name[ansible_distribution_major_version] }}"
+  command: "subscription-manager repos --enable {{ asc_repository_name[ansible_distribution_major_version] }}"
   changed_when: True

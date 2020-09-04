@@ -19,6 +19,6 @@ c_rh_c_host: "cert.cloud.redhat.com"
 source_display_name: "{{ tower_url|urlsplit('hostname') }}"
 use_existing_source: no
 rhsm_asc_sku: MCT3692
-asc_package_name:
+asc_repository_name:
       '7': rhel-7-server-automation-services-catalog-1-beta-rpms
       '8': automation-services-catalog-1-beta-for-rhel-8-x86_64-rpms
